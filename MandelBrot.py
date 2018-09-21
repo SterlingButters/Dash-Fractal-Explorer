@@ -7,6 +7,7 @@ import plotly.graph_objs as go
 import numpy as np
 from numba import jit
 from textwrap import dedent as d
+TODO: Fix aspect ratio
 
 styles = {
     'pre': {
