@@ -8,8 +8,6 @@ import numpy as np
 from numba import jit
 from textwrap import dedent as d
 
-# TODO: Fix aspect ratio
-
 styles = {
     'pre': {
         'border': 'thin lightgrey solid',
@@ -56,7 +54,12 @@ layout = go.Layout(
     title='Mandelbrot Plot',
     width=1250,
     height=1250,
-    )
+    xaxis = dict(
+    ),
+    yaxis = dict(
+      scaleanchor = "x",
+    ),
+)
 
 fig = go.Figure(data=data, layout=layout)
 
@@ -165,6 +168,11 @@ def display_selected_data(iterations, relayoutData):
         title='Mandelbrot Plot',
         width=1250,
         height=1250,
+        xaxis = dict(
+        ),
+        yaxis = dict(
+          scaleanchor = "x",
+        ),
     )
 
     fig = go.Figure(data=data, layout=layout)
