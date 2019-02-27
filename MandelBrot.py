@@ -20,6 +20,7 @@ app.config['suppress_callback_exceptions'] = True
 
 #######################################################################################################################
 
+
 @jit
 def mandelbrot(c, maxiter, threshold=2):
     z = c
