@@ -62,7 +62,7 @@ def DistanceEstimator(positions, iterations, degree=8, bailout=1000):
     return 0.5 * np.log(r) * r / dr
 
 
-def trace(start, directions, max_steps, min_distance, iterations, degree, bailout, power):
+def trace(start, directions, max_steps, min_distance, iterations, degree, bailout):
     total_distance = np.zeros(directions.shape[0])
     keep_iterations = np.ones_like(total_distance)
     steps = np.zeros_like(total_distance)
@@ -73,11 +73,9 @@ def trace(start, directions, max_steps, min_distance, iterations, degree, bailou
         total_distance += distance * keep_iterations
         steps += keep_iterations
 
-    # total_distance[total_distance > 5] = 5
-    return total_distance[total_distance < 5] * -directions[total_distance < 5][:, 0],\
-           total_distance[total_distance < 5] * -directions[total_distance < 5][:, 1],\
-           total_distance[total_distance < 5] * -directions[total_distance < 5][:, 2]
-    # return 1 - (steps/max_steps)**power
+    return total_distance[total_distance < 3] * -directions[total_distance < 3][:, 0],\
+           total_distance[total_distance < 3] * -directions[total_distance < 3][:, 1],\
+           total_distance[total_distance < 3] * -directions[total_distance < 3][:, 2]
 
 
 def get_directions(P, Q):
@@ -87,39 +85,44 @@ def get_directions(P, Q):
 
 
 def plot_mandelbulb(degree=8, observer_position=np.array([3, 0, 0]), max_steps=32, iterations=32, bailout=32000,
-                    min_distance=5e-3, zoom=0, power=.1, width=200, height=200, span=[1.5, 1.5], center=[0, 0],
+                    min_distance=5e-3, zoom=0, width=200, height=200, span=[1.5, 1.5], center=[0, 0],
                     ):
 
     plane_points = get_plane_points(observer_position, center=center, span=span, zoom=zoom, width=width, height=height)
     directions = get_directions(plane_points, observer_position)
-    image = trace(observer_position, directions, max_steps, min_distance, iterations, degree, bailout, power)
+    image = trace(observer_position, directions, max_steps, min_distance, iterations, degree, bailout)
     Xs = observer_position[0] - image[0]
     Ys = observer_position[1] - image[1]
     Zs = observer_position[2] - image[2]
     return Xs, Ys, Zs
+
 
 xs = []
 ys = []
 zs = []
 
 for angle in [[3, 0, 0], [0, 3, 0], [0, 0, 3], [-3, 0, 0], [0, -3, 0], [0, 0, -3]]:
-    xs_, ys_, zs_ = plot_mandelbulb(observer_position=np.array(angle))
+    xs_, ys_, zs_ = plot_mandelbulb(degree=9, observer_position=np.array(angle))
     xs.extend(xs_)
     ys.extend(ys_)
     zs.extend(zs_)
+
+xs = np.array(xs)
+ys = np.array(ys)
+zs = np.array(zs)
 
 bulb = go.Scatter3d(x=xs,
                     y=ys,
                     z=zs,
                     mode='markers',
                     marker=dict(size=1,
+                                color=np.sqrt(xs ** 2 + ys ** 2 + zs ** 2),
+                                colorscale='Viridis',
                                 # size=np.e ** np.sqrt(xs ** 2 + ys ** 2 + zs ** 2),
-                                # color=np.sqrt(xs ** 2 + ys ** 2 + zs ** 2),
                                 # line=dict(
                                 #     color='rgb(204, 204, 204)',
                                 #     width=1
                                 # ),
-                                colorscale='Viridis',
                                 ),
                     opacity=.7,
                     )
@@ -137,17 +140,3 @@ layout = go.Layout(
 
 fig = go.Figure(data=data, layout=layout)
 plot(fig, filename='test.html', auto_open=True)
-
-# plotly_trace = go.Heatmap(z=np.array(plot_mandelbulb()))
-#
-# data = [plotly_trace]
-#
-# layout = go.Layout(
-#     title='Mandelbrot Plot',
-#     width=1250,
-#     height=1250,
-# )
-#
-# fig = go.Figure(data=data, layout=layout)
-#
-# plotly.offline.plot(fig, filename="MandelBulb.html")
