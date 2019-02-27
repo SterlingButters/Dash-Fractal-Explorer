@@ -2,12 +2,11 @@
 from math import pi as PI
 from math import sin, cos
 import random
-
-root = 0
-
-from plotly.graph_objs import *
+import plotly.graph_objs as go
 import plotly.plotly as py
 import plotly.tools as tls
+
+root = 0
 
 
 # color the tree with a gradient from root_col to tip_col
@@ -44,7 +43,7 @@ def fractal_tree(lines, iterat, origin, t, r, theta, dtheta, root_col, tip_col, 
     # color the branch according to its position in the tree
     col = get_col(root_col, tip_col, iterat)
     # add to traces
-    lines.append(Scatter(x=[x0, x], y=[y0, y], mode='lines', line=Line(color=col, width=1)))
+    lines.append(go.Scatter(x=[x0, x], y=[y0, y], mode='lines', line=go.scatter.Line(color=col, width=1)))
     # recursive calls
     if randomize:
         fractal_tree(lines, iterat - 1, (x, y), t * r, r,
@@ -58,7 +57,10 @@ def fractal_tree(lines, iterat, origin, t, r, theta, dtheta, root_col, tip_col, 
         fractal_tree(lines, iterat - 1, (x, y), t * r, r, theta - dtheta, dtheta, root_col, tip_col, randomize)
 
 
+branch_data = []
+
 for i in range(30):
+    print(i)
     # angle to radian factor
     ang2rad = PI / 180.0
     # experiment with number of iteratations (try 4 to 14)
@@ -90,14 +92,17 @@ for i in range(30):
         if color not in branches:
             branches[color] = line
         else:
-            branches[color]['x'].extend(line['x'])
-            branches[color]['y'].extend(line['y'])
-            branches[color]['x'].append(None)
-            branches[color]['y'].append(None)
+            branches[color]['x'] = branches[color]['x']+(line['x'],)
+            branches[color]['y'] = branches[color]['y']+(line['y'],)
+            branches[color]['x'] = branches[color]['x']+(None,)
+            branches[color]['y'] = branches[color]['y']+(None,)
 
-    branch_data = [branches[c] for c in branches]
+    branch_data.extend([branches[c] for c in branches])
 
-    layout = Layout(yaxis=YAxis(autorange='reversed'),
-                    width=500, height=800, showlegend=False)
-    fig = Figure(data=Data(branch_data), layout=layout)
-    py.iplot(fig, filename='random fractal tree #{}'.format(i + 1))
+
+layout = go.Layout(yaxis=go.layout.YAxis(autorange='reversed'),
+                   width=500, height=800, showlegend=False)
+
+fig = go.Figure(data=branch_data, layout=layout)
+
+py.iplot(fig, filename='random fractal tree #{}'.format(1), auto_open=True)
