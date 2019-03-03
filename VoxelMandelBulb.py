@@ -146,30 +146,3 @@ layout = go.Layout(
 
 fig = go.Figure(data=data, layout=layout)
 offline.plot(fig, filename='test.html', auto_open=True)
-
-
-################################################################################
-
-# tris = mtri.Triangulation(xs, ys)
-#
-# fig = plt.figure()
-# ax = fig.add_subplot(111, projection='3d')
-# ax.plot_trisurf(xs, ys, zs, triangles=tris.triangles, cmap=plt.cm.bone)
-# plt.show()
-
-# points2D = np.vstack([xs, ys]).T
-# tri = Delaunay(points2D)
-#
-# https://plot.ly/python/isosurfaces-with-marching-cubes/
-# vertices, simplices = measure.marching_cubes_classic(surf, 0)
-# x, y, z = zip(*vertices)
-#
-# colormap = ['rgb(255,105,180)', 'rgb(255,255,51)', 'rgb(0,191,255)']
-# fig = ff.create_trisurf(x=xs,
-#                         y=ys,
-#                         z=zs,
-#                         plot_edges=False,
-#                         colormap=colormap,
-#                         simplices=tri.simplices,
-#                         title="Isosurface")
-# offline.plot(fig, auto_open=True)

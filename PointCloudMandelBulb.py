@@ -84,8 +84,8 @@ def get_directions(P, Q):
     return v
 
 
-def plot_mandelbulb(degree=8, observer_position=np.array([3, 0, 0]), max_steps=32, iterations=32, bailout=32000,
-                    min_distance=5e-3, zoom=0, width=200, height=200, span=[1.5, 1.5], center=[0, 0],
+def plot_mandelbulb(degree, observer_position=np.array([3, 0, 0]), max_steps=32, iterations=32, bailout=32000,
+                    min_distance=5e-3, zoom=0, width=250, height=250, span=[1.5, 1.5], center=[0, 0],
                     ):
 
     plane_points = get_plane_points(observer_position, center=center, span=span, zoom=zoom, width=width, height=height)
@@ -102,10 +102,13 @@ ys = []
 zs = []
 
 for angle in [[3, 0, 0], [0, 3, 0], [0, 0, 3], [-3, 0, 0], [0, -3, 0], [0, 0, -3]]:
-    xs_, ys_, zs_ = plot_mandelbulb(degree=9, observer_position=np.array(angle))
+    xs_, ys_, zs_ = plot_mandelbulb(degree=8, observer_position=np.array(angle))
     xs.extend(xs_)
     ys.extend(ys_)
     zs.extend(zs_)
+
+pd.set_option('display.max_rows', None)
+# print(pd.DataFrame({'X': xs, 'Y': ys, 'Z': zs}).sort_values(by=['Z']))
 
 xs = np.array(xs)
 ys = np.array(ys)
